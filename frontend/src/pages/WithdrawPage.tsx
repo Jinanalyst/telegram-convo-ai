@@ -7,11 +7,16 @@ const WithdrawPage = () => {
   const [address, setAddress] = useState('');
   const [amount] = useState(10.0); // Example amount
 
+  const isValidAddress = (address: string) => {
+    // Add logic to validate TON wallet address
+    return address.length > 0; // Placeholder validation
+  };
+
   const handleWithdraw = () => {
-    if (address) {
-      alert('Withdrawal successful!');
+    if (isValidAddress(address)) {
+      alert(`Withdrawal of ${amount} TON to ${address} was successful!`);
     } else {
-      alert('Please enter a valid address.');
+      alert('Please enter a valid TON wallet address.');
     }
   };
 
