@@ -1,9 +1,7 @@
 {
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "buildCommand": "",
-  "outputDirectory": "webapp"
-} 
+    "functions": {
+      "api/**/*.js": {}
+    },
+    "buildCommand": "",
+    "outputDirectory": "webapp"
+  }
