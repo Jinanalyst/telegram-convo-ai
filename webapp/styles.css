@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #ffffff;
+  background: #1e1e1e;
+}
+
+.container {
+  padding: 16px;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #0088cc;
+  color: #fff;
+}
+
+#chat {
+  height: 300px;
+  overflow-y: auto;
+  background: #2b2b2b;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.message {
+  margin: 4px 0;
+}
+
+.message.ai {
+  color: #9cdcfe;
+}
+
+.message.user {
+  color: #dcdcaa;
+} 
