@@ -118,16 +118,20 @@ function renderDeposit(status) {
 
 function renderChat(status) {
   appEl.innerHTML = `
-    <div class="container">
-      <div id="chat" style="height:300px"></div>
-      <input id="input" placeholder="Type a message..." style="width:70%" />
-      <button id="send">Send</button>
+    <div class="container chat-wrapper">
+      <div id="chat"></div>
+      <div style="display:flex;gap:4px;">
+        <input id="input" placeholder="Type a message..." style="flex:1" />
+        <button id="send">Send</button>
+      </div>
       <p>Earned: <span id="earned">${status.earned} TON</span> <button id="viewRewards">Rewards</button></p>
     </div>`;
 
   const chatEl = document.getElementById('chat');
   const inputEl = document.getElementById('input');
   const earnedEl = document.getElementById('earned');
+
+  const rewardSound = new Audio('data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAeAAACABBAAAACAfQ//uQxAABAAAAAQAAAP/+5DEAAEAAAABAAAA//7kMQAAQAAAAEAAAD//uQxAABAAAAAQAAAP/+5DEAAEAAAABAAAA');
 
   async function sendMessage() {
     const text = inputEl.value.trim();
@@ -144,6 +148,8 @@ function renderChat(status) {
       const data = await res.json();
       addMessage('ai', data.reply);
       earnedEl.textContent = data.totalEarned + ' TON';
+      showToast(`+${REWARD_TON} TON`);
+      rewardSound.play().catch(()=>{});
     } catch (e) {
       addMessage('ai', 'Error, please try again later.');
     }
@@ -155,6 +161,14 @@ function renderChat(status) {
     div.textContent = text;
     chatEl.appendChild(div);
     chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function showToast(text) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = text;
+    document.body.appendChild(toast);
+    setTimeout(()=> toast.remove(), 2000);
   }
 
   document.getElementById('send').onclick = sendMessage;
