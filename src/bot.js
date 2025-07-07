@@ -23,7 +23,11 @@ bot.start(async (ctx) => {
   }
 
   if (user.verified) {
-    await ctx.reply('✅ You are already verified! Enjoy Convoai.');
+    await ctx.reply('✅ You are already verified! Enjoy Convoai.', {
+      ...Markup.inlineKeyboard([
+        Markup.button.webApp('💬 Start Chatting', `${WEBAPP_URL}?api=${encodeURIComponent(API_BASE_URL)}&uid=${tgId}`),
+      ]),
+    });
     return;
   }
 
@@ -37,7 +41,7 @@ bot.start(async (ctx) => {
       parse_mode: 'HTML',
       ...Markup.inlineKeyboard([
         Markup.button.callback('✅ Check Deposit', 'CHECK_DEPOSIT'),
-        Markup.button.webApp('💬 Start Chatting', `${WEBAPP_URL}?api=${encodeURIComponent(API_BASE_URL)}`),
+        Markup.button.webApp('💬 Start Chatting', `${WEBAPP_URL}?api=${encodeURIComponent(API_BASE_URL)}&uid=${tgId}`),
       ]),
     });
   } catch (err) {

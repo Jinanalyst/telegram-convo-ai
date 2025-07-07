@@ -1,6 +1,7 @@
 const tg = window.Telegram.WebApp;
+const paramUid = new URLSearchParams(window.location.search).get('uid');
 const user = tg.initDataUnsafe.user || {};
-const userId = user.id;
+const userId = user.id || paramUid;
 
 // Determine backend API base URL
 const params = new URLSearchParams(window.location.search);
