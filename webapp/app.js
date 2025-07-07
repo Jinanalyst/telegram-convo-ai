@@ -26,6 +26,54 @@ const params = new URLSearchParams(window.location.search);
 const API_BASE = params.get('api') || '';
 
 const appEl = document.getElementById('app');
+const navEl = document.getElementById('nav');
+
+const PAGES = {
+  chat: renderChat,
+  withdraw: renderWithdraw,
+  dashboard: renderDashboard,
+  deposits: renderDeposits,
+};
+let currentPage = 'chat';
+
+function renderNav() {
+  navEl.innerHTML = `
+    <div class="navbar">
+      <button id="tab-chat">Chat</button>
+      <button id="tab-withdraw">Withdraw</button>
+      <button id="tab-dashboard">Dashboard</button>
+      <button id="tab-deposits">Deposits</button>
+    </div>`;
+  ['chat','withdraw','dashboard','deposits'].forEach((p)=>{
+    document.getElementById(`tab-${p}`).onclick = () => navigate(p);
+  });
+  updateActiveTab();
+}
+
+function updateActiveTab() {
+  const buttons = navEl.querySelectorAll('button');
+  buttons.forEach(b=>b.classList.remove('active'));
+  const active = document.getElementById(`tab-${currentPage}`);
+  if (active) active.classList.add('active');
+}
+
+async function navigate(page) {
+  currentPage = page;
+  updateActiveTab();
+  const status = await fetchStatus();
+  PAGES[page](status);
+}
+
+// Placeholder pages
+function renderWithdraw(status){
+  appEl.innerHTML=`<div class="container"><h2>Withdraw (coming soon)</h2><p>You can withdraw ${status.earned} TON.</p></div>`;
+}
+function renderDashboard(status){
+  appEl.innerHTML=`<div class="container"><h2>Dashboard (coming soon)</h2></div>`;
+}
+function renderDeposits(status){
+  appEl.innerHTML=`<div class="container"><h2>Deposit History (coming soon)</h2></div>`;
+}
 
 async function fetchStatus() {
   try {
@@ -140,6 +188,7 @@ function renderRewards(status) {
     return;
   }
   const status = await fetchStatus();
+  renderNav();
   if (status.verified) {
     renderChat(status);
   } else {
