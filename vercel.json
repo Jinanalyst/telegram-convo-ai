@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/webapp/index.html" }
+    { "source": "/", "destination": "/webapp/index.html" },
+    { "source": "/(?<file>.*\\.(js|css|png))", "destination": "/webapp/$file" }
   ]
 }
