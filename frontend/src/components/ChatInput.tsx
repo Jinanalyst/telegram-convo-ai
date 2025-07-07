@@ -11,7 +11,7 @@ const ChatInput: React.FC<{ onSend: (message: string) => void }> = ({ onSend }) 
   };
 
   return (
-    <div className="chat-input fixed bottom-0 w-full flex items-center p-2 bg-bgSecondary shadow-md">
+    <div className="chat-input fixed bottom-16 w-full flex items-center p-2 bg-white dark:bg-gray-800 shadow-md max-w-md mx-auto left-1/2 transform -translate-x-1/2 z-20">
       <input
         type="text"
         value={message}

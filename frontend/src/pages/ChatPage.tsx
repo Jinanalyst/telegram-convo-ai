@@ -61,7 +61,7 @@ const ChatPage = () => {
           <span className="text-xs">History</span>
         </button>
       </nav>
-      <div className="chat-messages flex-grow overflow-y-auto p-2 sm:p-4 md:p-6 space-y-3">
+      <div className="chat-messages flex-grow overflow-y-auto p-2 sm:p-4 md:p-6 space-y-3 pb-40">
         {messages.map((msg, index) => (
           <ChatBubble key={index} role={msg.role} text={msg.text} />
         ))}
