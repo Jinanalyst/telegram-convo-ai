@@ -22,7 +22,7 @@ const ChatPage = () => {
   }, [messages]);
 
   return (
-    <div className="chat-page flex flex-col h-full">
+    <div className="chat-page flex flex-col h-full bg-white dark:bg-gray-900">
       <div className="chat-messages flex-grow overflow-y-auto p-4 space-y-3">
         {messages.map((msg, index) => (
           <ChatBubble key={index} role={msg.role} text={msg.text} />

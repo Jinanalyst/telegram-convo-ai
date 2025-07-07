@@ -21,7 +21,7 @@ const WithdrawPage = () => {
   };
 
   return (
-    <div className="withdraw-page p-4 space-y-4">
+    <div className="withdraw-page p-4 space-y-4 bg-white dark:bg-gray-900">
       <BalanceMeter amount={amount} />
       <AddressInput onAddressChange={setAddress} />
       <PrimaryButton onClick={handleWithdraw} disabled={!address}>
