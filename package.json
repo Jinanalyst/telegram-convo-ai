@@ -9,7 +9,7 @@
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
+    "@heroicons/react": "^1.0.6",
     "@vercel/kv": "0.1.2",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
