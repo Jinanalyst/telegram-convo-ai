@@ -4,6 +4,15 @@
 @tailwind utilities;
 
 :root {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F6F7F9;
+  --text-primary: #1E1E1E;
+  --text-secondary: #6B7280;
+  --accent: #3B82F6;
+  --bubble-user: #3B82F6;
+  --bubble-bot: #E5E7EB;
+  --card-shadow: rgba(0,0,0,0.06);
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -28,6 +37,7 @@ a:hover {
 }
 
 body {
+  @apply bg-bgPrimary text-textPrimary;
   margin: 0;
   display: flex;
   place-items: center;
@@ -41,6 +51,7 @@ h1 {
 }
 
 button {
+  @apply rounded-full shadow-md;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -70,4 +81,25 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1E1E1E;
+    --bg-secondary: #2B2B2B;
+    --text-primary: #F7F7F7;
+    --text-secondary: #9CA3AF;
+    --accent: #60A5FA;
+    --bubble-user: #2563EB;
+    --bubble-bot: #374151;
+    --card-shadow: rgba(0,0,0,0.25);
+  }
+}
+
+input {
+  @apply border border-gray-300 rounded-full;
+}
+
+.card {
+  @apply bg-bgSecondary p-4 rounded-xl shadow-md;
 }
