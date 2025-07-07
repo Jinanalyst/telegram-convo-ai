@@ -28,8 +28,16 @@ const API_BASE = params.get('api') || '';
 const appEl = document.getElementById('app');
 
 async function fetchStatus() {
-  const res = await fetch(`${API_BASE}/api/status/${userId}`);
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE}/api/status/${userId}`);
+    if (!res.ok) throw new Error('status ' + res.status);
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.error('fetchStatus error', e);
+    // fallback empty status
+    return { verified: false, earned: 0, messages: 0 };
+  }
 }
 
 function renderDeposit(status) {
@@ -37,12 +45,18 @@ function renderDeposit(status) {
     <div class="container">
       <h2>Deposit 10 TON to unlock chat</h2>
       <p>Send at least 10 TON to:</p>
-      <code>UQCpjI3LzlAcvJz_4d1q1AiT5CJVY1onmpBsNO-7yEpZJyU8</code>
+      <code id="walletAddr">UQCpjI3LzlAcvJz_4d1q1AiT5CJVY1onmpBsNO-7yEpZJyU8</code>
+      <button id="copyAddr">Copy</button>
       <br/>
-      <img src="/qr.png" alt="QR" width="180" />
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=UQCpjI3LzlAcvJz_4d1q1AiT5CJVY1onmpBsNO-7yEpZJyU8" alt="QR" width="180" />
       <p>Status: <strong>${status.verified ? '✅ Deposit confirmed' : 'Waiting for deposit...'}</strong></p>
       <button id="refresh">Refresh</button>
     </div>`;
+
+  document.getElementById('copyAddr').onclick = () => {
+    navigator.clipboard.writeText('UQCpjI3LzlAcvJz_4d1q1AiT5CJVY1onmpBsNO-7yEpZJyU8');
+    alert('Address copied!');
+  };
 
   document.getElementById('refresh').onclick = async () => {
     const newStatus = await fetchStatus();
@@ -57,10 +71,10 @@ function renderDeposit(status) {
 function renderChat(status) {
   appEl.innerHTML = `
     <div class="container">
-      <div id="chat"></div>
-      <input id="input" placeholder="Type a message..." style="width:80%" />
+      <div id="chat" style="height:300px"></div>
+      <input id="input" placeholder="Type a message..." style="width:70%" />
       <button id="send">Send</button>
-      <p>Earned: <span id="earned">${status.earned} TON</span></p>
+      <p>Earned: <span id="earned">${status.earned} TON</span> <button id="viewRewards">Rewards</button></p>
     </div>`;
 
   const chatEl = document.getElementById('chat');
@@ -73,14 +87,18 @@ function renderChat(status) {
     inputEl.value = '';
     addMessage('user', text);
 
-    const res = await fetch(`${API_BASE}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: userId, message: text }),
-    });
-    const data = await res.json();
-    addMessage('ai', data.reply);
-    earnedEl.textContent = data.totalEarned + ' TON';
+    try {
+      const res = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userId, message: text }),
+      });
+      const data = await res.json();
+      addMessage('ai', data.reply);
+      earnedEl.textContent = data.totalEarned + ' TON';
+    } catch (e) {
+      addMessage('ai', 'Error, please try again later.');
+    }
   }
 
   function addMessage(type, text) {
@@ -95,6 +113,25 @@ function renderChat(status) {
   inputEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') sendMessage();
   });
+
+  document.getElementById('viewRewards').onclick = async () => {
+    const latest = await fetchStatus();
+    renderRewards(latest);
+  };
+}
+
+function renderRewards(status) {
+  appEl.innerHTML = `
+    <div class="container">
+      <h2>Your Rewards</h2>
+      <p>Messages sent: <strong>${status.messages}</strong></p>
+      <p>Total earned: <strong>${status.earned} TON</strong></p>
+      <button id="backToChat">Back to Chat</button>
+    </div>`;
+
+  document.getElementById('backToChat').onclick = () => {
+    renderChat(status);
+  };
 }
 
 (async () => {
