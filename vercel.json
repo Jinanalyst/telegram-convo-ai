@@ -1,6 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/", "destination": "/webapp/index.html" },
-    { "source": "/(.*\\.(?:js|css|png|ico))", "destination": "/webapp/$1" }
-  ]
-}
