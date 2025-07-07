@@ -2,6 +2,7 @@ import { isAdmin } from './config.js';
 
 // decide storage backend
 const useKV = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+const LOCAL_DEV = process.env.LOCAL_DEV === 'true';
 
 let kvClient = null;
 if (useKV) {
@@ -19,9 +20,18 @@ async function initLowDb() {
   const { promises: fs } = await import('fs');
   const { join, dirname } = await import('path');
   const { fileURLToPath } = await import('url');
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const dataDir = join(__dirname, '../data');
+
+  let dataDir;
+  if (LOCAL_DEV) {
+    // persistent data on local machine inside repo
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    dataDir = join(__dirname, '../data');
+  } else {
+    // serverless environment (read-only FS) – use /tmp which is writable but ephemeral
+    dataDir = '/tmp';
+  }
+
   await fs.mkdir(dataDir, { recursive: true });
   const file = join(dataDir, 'db.json');
   const adapter = new JSONFile(file);
@@ -43,6 +53,10 @@ async function kvSetUser(user) {
 // Public API
 export async function getUser(id) {
   if (useKV) return kvGetUser(id);
+  if (!LOCAL_DEV) {
+    // KV not configured in prod – treat everyone as unverified to avoid crashes
+    return null;
+  }
   await initLowDb();
   return db.data.users.find((u) => u.id === id);
 }
