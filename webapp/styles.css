@@ -8,6 +8,9 @@ body {
 
 .container {
   padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 button {
@@ -27,6 +30,7 @@ button {
   padding: 8px;
   border-radius: 6px;
   margin-bottom: 8px;
+  text-align: left;
 }
 
 .message {
