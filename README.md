@@ -29,6 +29,7 @@ cp env.sample .env
 | `TON_WALLET` | Wallet that receives deposits |
 | `TON_API_KEY` | (Optional) TON API key for higher rate limits |
 | `ADMIN_IDS` | Comma-separated Telegram user IDs with admin rights |
+| `WEBAPP_URL` | Public HTTPS URL of the Telegram Mini App |
 
 3. Start the bot:
 
