@@ -1,7 +1,25 @@
 const tg = window.Telegram.WebApp;
 const paramUid = new URLSearchParams(window.location.search).get('uid');
-const user = tg.initDataUnsafe.user || {};
-const userId = user.id || paramUid;
+const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+
+// Attempt to derive the Telegram user ID from multiple sources
+// 1. initDataUnsafe.user.id (preferred)
+// 2. "uid" query parameter
+// 3. initDataUnsafe.start_param (when the WebApp is opened via `web_app` button and query params are stripped)
+
+let userId = user.id || paramUid;
+
+// Fallback: try to extract uid from start_param if still undefined
+if (!userId && tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
+  const startParam = tg.initDataUnsafe.start_param;
+  // Handle cases like "uid=123456" or plain numeric "123456"
+  const match = startParam.match(/uid=(\d+)/);
+  if (match) {
+    userId = match[1];
+  } else if (/^\d+$/.test(startParam)) {
+    userId = startParam;
+  }
+}
 
 // Determine backend API base URL
 const params = new URLSearchParams(window.location.search);
