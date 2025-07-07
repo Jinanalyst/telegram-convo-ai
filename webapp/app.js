@@ -26,7 +26,12 @@ const params = new URLSearchParams(window.location.search);
 const API_BASE = params.get('api') || '';
 
 const appEl = document.getElementById('app');
-const navEl = document.getElementById('nav');
+let navEl = document.getElementById('nav');
+if (!navEl) {
+  navEl = document.createElement('div');
+  navEl.id = 'nav';
+  document.body.appendChild(navEl);
+}
 
 const PAGES = {
   chat: renderChat,
