@@ -1,10 +1,10 @@
 {
   "users": [
     {
-      "messages": 0,
-      "earned": 0,
+      "messages": 59,
+      "earned": 3150000000,
       "id": 1768578941,
-      "verified": false
+      "verified": true
     }
   ]
 }
