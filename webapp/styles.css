@@ -1,9 +1,35 @@
+:root {
+  --bg:#1e1e1e;
+  --card:#2b2b2b;
+  --text:#ffffff;
+  --accent:#0088cc;
+  --bot:#3a3a3a;
+  --bot-text:#9cdcfe;
+  --user:#0088cc;
+  --user-text:#fff;
+  --border:#444;
+  --toast:#ffa500;
+  --toast-text:#1e1e1e;
+}
+body.light {
+  --bg:#f4f4f4;
+  --card:#ffffff;
+  --text:#000;
+  --accent:#0088cc;
+  --bot:#eaeaea;
+  --bot-text:#0b5fa5;
+  --user:#0088cc;
+  --user-text:#fff;
+  --border:#ddd;
+  --toast:#ffb347;
+  --toast-text:#000;
+}
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  color: #ffffff;
-  background: #1e1e1e;
+  color: var(--text);
+  background: var(--bg);
   padding-bottom: 60px;
 }
 
@@ -20,7 +46,7 @@ button {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background: #0088cc;
+  background: var(--accent);
   color: #fff;
 }
 
@@ -33,7 +59,7 @@ button {
 #chat {
   flex: 1;
   overflow-y: auto;
-  background: #2b2b2b;
+  background: var(--card);
   padding: 8px;
   border-radius: 6px;
   margin-bottom: 8px;
@@ -52,15 +78,15 @@ button {
 
 .message.ai {
   align-self: flex-start;
-  background: #3a3a3a;
-  color: #9cdcfe;
+  background: var(--bot);
+  color: var(--bot-text);
   border-bottom-left-radius: 0;
 }
 
 .message.user {
   align-self: flex-end;
-  background: #0088cc;
-  color: #fff;
+  background: var(--user);
+  color: var(--user-text);
   border-bottom-right-radius: 0;
 }
 
@@ -69,8 +95,8 @@ button {
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: #ffa500;
-  color: #1e1e1e;
+  background: var(--toast);
+  color: var(--toast-text);
   padding: 6px 12px;
   border-radius: 20px;
   font-weight: bold;
@@ -91,23 +117,23 @@ button {
   left: 0;
   right: 0;
   height: 56px;
-  background: #2b2b2b;
+  background: var(--card);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--border);
 }
 
 .navbar button {
   flex: 1;
   background: none;
   border: none;
-  color: #ccc;
+  color: var(--text);
   font-size: 14px;
   height: 100%;
 }
 
 .navbar button.active {
-  color: #fff;
-  background: #1e1e1e;
+  color: var(--bg);
+  background: var(--bg);
 } 

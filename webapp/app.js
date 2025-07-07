@@ -36,6 +36,10 @@ const PAGES = {
 };
 let currentPage = 'chat';
 
+const REWARD_TON = 0.05; // keep in sync with backend
+
+if(tg && tg.colorScheme==='light') document.body.classList.add('light');
+
 function renderNav() {
   navEl.innerHTML = `
     <div class="navbar">
@@ -43,7 +47,12 @@ function renderNav() {
       <button id="tab-withdraw">Withdraw</button>
       <button id="tab-dashboard">Dashboard</button>
       <button id="tab-deposits">Deposits</button>
+      <button id="themeToggle">☾</button>
     </div>`;
+  document.getElementById('themeToggle').onclick=()=>{
+    document.body.classList.toggle('light');
+    localStorage.setItem('theme',document.body.classList.contains('light')?'light':'dark');
+  };
   ['chat','withdraw','dashboard','deposits'].forEach((p)=>{
     document.getElementById(`tab-${p}`).onclick = () => navigate(p);
   });
@@ -66,7 +75,31 @@ async function navigate(page) {
 
 // Placeholder pages
 function renderWithdraw(status){
-  appEl.innerHTML=`<div class="container"><h2>Withdraw (coming soon)</h2><p>You can withdraw ${status.earned} TON.</p></div>`;
+  appEl.innerHTML=`<div class="container"><h2>Withdraw TON</h2>
+    <p>Withdrawable: <strong id="wdAvail">${status.earned} TON</strong></p>
+    <input id="wdAddr" placeholder="Your TON wallet address" style="width:100%;margin-bottom:8px" />
+    <button id="wdBtn">Withdraw</button>
+    <p id="wdMsg" style="margin-top:8px;color:#ffa500"></p>
+  </div>`;
+  const wdBtn=document.getElementById('wdBtn');
+  const wdAddr=document.getElementById('wdAddr');
+  const wdMsg=document.getElementById('wdMsg');
+  wdBtn.onclick=async()=>{
+    const addr=wdAddr.value.trim();
+    if(!addr){wdMsg.textContent='Address required';return;}
+    if(!/^[EU][A-Za-z0-9_-]{46,48}$/.test(addr)){wdMsg.textContent='Invalid TON address';return;}
+    wdBtn.disabled=true; wdMsg.textContent='Processing…';
+    try{
+      const res=await fetch(`${API_BASE}/api/withdraw`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:userId,address:addr})});
+      const data=await res.json();
+      if(res.ok){
+         wdMsg.style.color='#0f0';
+         wdMsg.textContent=`Success! Withdrawn ${data.withdrawn} TON.`;
+         document.getElementById('wdAvail').textContent='0 TON';
+      }else{wdMsg.style.color='#f00'; wdMsg.textContent=data.error||'Error';}
+    }catch(e){wdMsg.style.color='#f00'; wdMsg.textContent='Network error';}
+    wdBtn.disabled=false;
+  };
 }
 function renderDashboard(status){
   appEl.innerHTML=`<div class="container"><h2>Dashboard (coming soon)</h2></div>`;
