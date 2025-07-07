@@ -7,7 +7,9 @@ export default async function handler(req, res) {
   }
   const { id } = req.query;
   const numId = Number(id);
-  if (!numId) return res.status(400).send('Invalid id');
+  if (!numId || Number.isNaN(numId)) {
+    return res.json({ verified: false, earned: 0, messages: 0 });
+  }
   const user = await getUser(numId);
   const verified = (user && user.verified) || isAdmin({ id: numId, username: '' });
   const earned = user ? (user.earned || 0) / 1_000_000_000 : 0;
