@@ -14,7 +14,7 @@ function App() {
     <Router>
       <div className="app-container">
         <ThemeToggle />
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><ChatPage /></motion.div>} />
             <Route path="/dashboard" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><DashboardPage /></motion.div>} />
