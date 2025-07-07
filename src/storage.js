@@ -1,12 +1,18 @@
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
+import { promises as fs } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { isAdmin } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const file = join(__dirname, '../data/db.json');
+// Ensure data directory exists
+const dataDir = join(__dirname, '../data');
+await fs.mkdir(dataDir, { recursive: true });
+
+const file = join(dataDir, 'db.json');
 const adapter = new JSONFile(file);
 const db = new Low(adapter, { users: [] });
 
@@ -21,7 +27,8 @@ export async function upsertUser(user) {
   await db.read();
   const idx = db.data.users.findIndex((u) => u.id === user.id);
   if (idx === -1) {
-    db.data.users.push({ messages: 0, earned: 0, ...user });
+    const verifiedFlag = isAdmin(user) || user.verified;
+    db.data.users.push({ messages: 0, earned: 0, verified: verifiedFlag, ...user });
   } else {
     db.data.users[idx] = { ...db.data.users[idx], ...user };
   }

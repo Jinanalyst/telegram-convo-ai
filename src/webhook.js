@@ -7,6 +7,7 @@ import { REWARD_TON } from './config.js';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { generateQrPng } from './utils/qr.js';
+import { isAdmin } from './config.js';
 
 const app = express();
 app.use(bodyParser.json());
@@ -43,8 +44,11 @@ app.post('/webhook/ton/deposit', async (req, res) => {
 app.get('/api/status/:id', async (req, res) => {
   const id = Number(req.params.id);
   const user = await getUser(id);
-  if (!user) return res.json({ verified: false, earned: 0, messages: 0 });
-  res.json({ verified: !!user.verified, earned: (user.earned || 0) / 1_000_000_000, messages: user.messages || 0 });
+  if (!user) {
+    const adminFlag = isAdmin({ id, username: '' });
+    return res.json({ verified: adminFlag, earned: 0, messages: 0 });
+  }
+  res.json({ verified: !!user.verified || isAdmin(user), earned: (user.earned || 0) / 1_000_000_000, messages: user.messages || 0 });
 });
 
 // API: chat endpoint
@@ -53,7 +57,9 @@ app.post('/api/chat', async (req, res) => {
   if (!id || !message) return res.status(400).send('Missing id or message');
 
   const user = await getUser(id);
-  if (!user || !user.verified) return res.status(403).send('Not verified');
+  if ((!user || !user.verified) && !isAdmin({ id, username: '' })) {
+    return res.status(403).send('Not verified');
+  }
 
   const reply = await chatWithAI(message, id);
 

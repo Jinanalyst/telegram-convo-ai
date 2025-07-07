@@ -1,5 +1,5 @@
 import { Telegraf, Markup } from 'telegraf';
-import { BOT_TOKEN, TON_WALLET, ADMIN_IDS, REWARD_TON, WEBAPP_URL } from './config.js';
+import { BOT_TOKEN, TON_WALLET, REWARD_TON, WEBAPP_URL, API_BASE_URL, isAdmin } from './config.js';
 import { getUser, upsertUser, getVerifiedUsers, incrementMessage, addEarnings } from './storage.js';
 import { fetchTransactions, findUserDeposit, TEN_TON_NANO } from './ton.js';
 import { generateQrPng } from './utils/qr.js';
@@ -11,9 +11,15 @@ const bot = new Telegraf(BOT_TOKEN);
 bot.start(async (ctx) => {
   const tgId = ctx.from.id;
   let user = await getUser(tgId);
+  const adminFlag = isAdmin(ctx.from);
   if (!user) {
-    user = { id: tgId, verified: false };
-    await upsertUser(user);
+    user = { id: tgId, verified: adminFlag };
+    await upsertUser({ ...user, username: ctx.from.username });
+  }
+
+  if (adminFlag && !user.verified) {
+    user.verified = true;
+    await upsertUser({ id: tgId, verified: true });
   }
 
   if (user.verified) {
@@ -21,19 +27,23 @@ bot.start(async (ctx) => {
     return;
   }
 
-  const caption = `👋 Welcome to *Convoai*\!\n\nTo unlock chat\-to\-earn, please deposit *10 TON* or more to the wallet below \(static\)\:\n\n
-${TON_WALLET}\n\nInclude *your Telegram ID* \(${tgId}\) in the transaction comment for faster verification\.`;
+  const caption = `👋 Welcome to <b>Convoai</b>\n\nTo unlock chat-to-earn, please deposit <b>10 TON</b> or more to the wallet below (static):\n\n<code>${TON_WALLET}</code>\n\nInclude <b>your Telegram ID</b> (${tgId}) in the transaction comment for faster verification.`;
 
   const qrBuffer = generateQrPng(TON_WALLET);
 
-  await ctx.replyWithPhoto({ source: qrBuffer }, {
-    caption,
-    parse_mode: 'MarkdownV2',
-    ...Markup.inlineKeyboard([
-      Markup.button.callback('✅ Check Deposit', 'CHECK_DEPOSIT'),
-      Markup.button.webApp('💬 Start Chatting', WEBAPP_URL),
-    ]),
-  });
+  try {
+    await ctx.replyWithPhoto({ source: qrBuffer }, {
+      caption,
+      parse_mode: 'HTML',
+      ...Markup.inlineKeyboard([
+        Markup.button.callback('✅ Check Deposit', 'CHECK_DEPOSIT'),
+        Markup.button.webApp('💬 Start Chatting', `${WEBAPP_URL}?api=${encodeURIComponent(API_BASE_URL)}`),
+      ]),
+    });
+  } catch (err) {
+    console.error('Telegram send error:', err);
+    await ctx.reply('Welcome! (Failed to send QR code, please contact admin.)');
+  }
 });
 
 // Manual check button

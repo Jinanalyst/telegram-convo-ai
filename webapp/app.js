@@ -2,10 +2,14 @@ const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe.user || {};
 const userId = user.id;
 
+// Determine backend API base URL
+const params = new URLSearchParams(window.location.search);
+const API_BASE = params.get('api') || '';
+
 const appEl = document.getElementById('app');
 
 async function fetchStatus() {
-  const res = await fetch(`/api/status/${userId}`);
+  const res = await fetch(`${API_BASE}/api/status/${userId}`);
   return res.json();
 }
 
@@ -50,7 +54,7 @@ function renderChat(status) {
     inputEl.value = '';
     addMessage('user', text);
 
-    const res = await fetch('/api/chat', {
+    const res = await fetch(`${API_BASE}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: userId, message: text }),

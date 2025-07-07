@@ -10,8 +10,16 @@ export const REWARD_TON = Number(process.env.REWARD_TON || 0.05); // TON per mes
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 export const WEBHOOK_PORT = Number(process.env.WEBHOOK_PORT || 3000);
 export const WEBAPP_URL = process.env.WEBAPP_URL || 'https://your-domain.com';
+export const API_BASE_URL = process.env.API_BASE_URL || 'https://your-backend-domain.com';
 
 if (!BOT_TOKEN) {
   console.error('Error: BOT_TOKEN is required in .env');
   process.exit(1);
+}
+
+export function isAdmin(user) {
+  if (!user) return false;
+  const { id, username } = user;
+  const strId = String(id);
+  return ADMIN_IDS.includes(strId) || (username && ADMIN_IDS.includes(username));
 } 

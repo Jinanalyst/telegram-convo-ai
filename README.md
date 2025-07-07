@@ -30,6 +30,7 @@ cp env.sample .env
 | `TON_API_KEY` | (Optional) TON API key for higher rate limits |
 | `ADMIN_IDS` | Comma-separated Telegram user IDs with admin rights |
 | `WEBAPP_URL` | Public HTTPS URL of the Telegram Mini App |
+| `API_BASE_URL` | Public HTTPS base URL where the Express bot server exposes /api/* |
 
 3. Start the bot:
 
