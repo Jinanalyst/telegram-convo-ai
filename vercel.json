@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/webapp/index.html" },
-    { "source": "/(?<file>.*\\.(js|css|png))", "destination": "/webapp/$file" }
+    { "source": "/(.*\\.(?:js|css|png|ico))", "destination": "/webapp/$1" }
   ]
 }
