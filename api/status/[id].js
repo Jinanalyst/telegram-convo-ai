@@ -1,5 +1,5 @@
-import { getUser } from '../src/storage.js';
-import { isAdmin } from '../src/config.js';
+import { getUser } from '../../src/storage.js';
+import { isAdmin } from '../../src/config.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
