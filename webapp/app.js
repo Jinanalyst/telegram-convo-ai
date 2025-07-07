@@ -157,6 +157,7 @@ function renderDeposit(status) {
 function renderChat(status) {
   appEl.innerHTML = `
     <div class="container chat-wrapper">
+      <small style="opacity:0.6">ID: ${userId}</small>
       <div id="chat"></div>
       <div style="display:flex;gap:4px;">
         <input id="input" placeholder="Type a message..." style="flex:1" />

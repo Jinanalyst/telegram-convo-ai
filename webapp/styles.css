@@ -35,7 +35,8 @@ body {
 
 .container {
   padding: 16px;
-  max-width: 480px;
+  max-width: 600px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
 }
@@ -69,7 +70,7 @@ button {
 }
 
 .message {
-  max-width: 80%;
+  max-width: 90%;
   padding: 8px 10px;
   border-radius: 12px;
   word-wrap: break-word;
@@ -136,4 +137,8 @@ button {
 .navbar button.active {
   color: var(--bg);
   background: var(--bg);
+}
+
+@media (min-width:700px){
+  .chat-wrapper{height:70vh;}
 } 
