@@ -5,9 +5,19 @@ const useKV = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOK
 const LOCAL_DEV = process.env.LOCAL_DEV === 'true';
 
 let kvClient = null;
+let kvAvailable = false;
 if (useKV) {
-  const kvMod = await import('@vercel/kv');
-  kvClient = kvMod.kv;
+  try {
+    const kvMod = await import('@vercel/kv');
+    // Some runtimes may expose `kv` undefined if binding isn't configured
+    if (kvMod && kvMod.kv && typeof kvMod.kv.get === 'function') {
+      kvClient = kvMod.kv;
+      kvAvailable = true;
+    }
+  } catch (err) {
+    // KV package not available – fall back to LowDB/local storage
+    kvAvailable = false;
+  }
 }
 
 // LowDB fallback for local dev
@@ -52,7 +62,7 @@ async function kvSetUser(user) {
 
 // Public API
 export async function getUser(id) {
-  if (useKV) return kvGetUser(id);
+  if (kvAvailable) return kvGetUser(id);
   if (!LOCAL_DEV) {
     // KV not configured in prod – treat everyone as unverified to avoid crashes
     return null;
@@ -62,7 +72,7 @@ export async function getUser(id) {
 }
 
 export async function upsertUser(user) {
-  if (useKV) {
+  if (kvAvailable) {
     const existing = (await kvGetUser(user.id)) || { messages: 0, earned: 0 };
     const verifiedFlag = isAdmin(user) || user.verified || existing.verified;
     const merged = { ...existing, ...user, verified: verifiedFlag };
@@ -81,7 +91,7 @@ export async function upsertUser(user) {
 }
 
 export async function getVerifiedUsers() {
-  if (useKV) {
+  if (kvAvailable) {
     // not efficient; for admin only in local env we keep LowDB.
     return [];
   }
@@ -90,7 +100,7 @@ export async function getVerifiedUsers() {
 }
 
 export async function incrementMessage(id) {
-  if (useKV) {
+  if (kvAvailable) {
     const user = (await kvGetUser(id)) || { id, messages: 0, earned: 0, verified: isAdmin({ id }) };
     user.messages = (user.messages || 0) + 1;
     await kvSetUser(user);
@@ -107,7 +117,7 @@ export async function incrementMessage(id) {
 }
 
 export async function addEarnings(id, amountNano) {
-  if (useKV) {
+  if (kvAvailable) {
     const user = (await kvGetUser(id)) || { id, messages: 0, earned: 0, verified: isAdmin({ id }) };
     user.earned = (user.earned || 0) + amountNano;
     await kvSetUser(user);
