@@ -1,4 +1,5 @@
-const tg = window.Telegram.WebApp;
+// Safely access Telegram WebApp object (prevents crash if opened outside Telegram)
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 const paramUid = new URLSearchParams(window.location.search).get('uid');
 const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
 
