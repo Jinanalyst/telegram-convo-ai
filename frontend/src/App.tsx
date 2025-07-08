@@ -17,6 +17,10 @@ const AnimatedRoutes = () => {
         <Route path="/dashboard" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><DashboardPage /></motion.div>} />
         <Route path="/withdraw" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><WithdrawPage /></motion.div>} />
         <Route path="/deposits" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><DepositsPage /></motion.div>} />
+        <Route path="/webapp" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><ChatPage /></motion.div>} />
+        <Route path="/webapp/dashboard" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><DashboardPage /></motion.div>} />
+        <Route path="/webapp/withdraw" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><WithdrawPage /></motion.div>} />
+        <Route path="/webapp/deposits" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><DepositsPage /></motion.div>} />
       </Routes>
     </AnimatePresence>
   );
